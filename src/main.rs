@@ -20,15 +20,17 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 fn expenses(inputs: &[i64]) -> Option<i64> {
     return inputs
         .iter()
-        .map(|item| (item, &inputs))
-        .filter_map(|(target, list)| {
-            list.iter()
-                .find(|list_item| (*list_item) + (*target) == 2020)
-                .map(|right| target * right)
+        .flat_map(move |&a| {
+            inputs
+                .iter()
+                .flat_map(move |&b| inputs.iter().map(move |&c| [a, b, c]))
         })
         .collect::<Vec<_>>()
+        .iter()
+        .filter(|[a, b, c]| a + b + c == 2020)
+        .collect::<Vec<_>>()
         .get(0)
-        .cloned();
+        .map(|[a, b, c]| a * b * c);
 }
 
 #[cfg(test)]
@@ -47,11 +49,14 @@ mod tests {
 
     #[test]
     fn only_two_answers() {
-        assert_eq!(Some(1_020_100), expenses(&[1010, 1010]))
+        assert_eq!(Some(241_861_950), expenses(&[979, 366, 675]))
     }
 
     #[test]
     fn multiple_answers() {
-        assert_eq!(Some(1_020_100), expenses(&[1, 2, 3, 4, 1010, 1010, 5, 6]))
+        assert_eq!(
+            Some(241_861_950),
+            expenses(&[1, 2, 3, 4, 979, 366, 675, 5, 6])
+        )
     }
 }
