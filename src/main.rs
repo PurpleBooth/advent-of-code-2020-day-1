@@ -21,16 +21,10 @@ fn expenses(inputs: &[i64]) -> Option<i64> {
     return inputs
         .iter()
         .map(|item| (item, &inputs))
-        .map(|(target, list)| {
-            (
-                target,
-                list.iter()
-                    .find(|list_item| (*list_item) + (*target) == 2020),
-            )
-        })
-        .filter_map(|item| match item {
-            (left, Some(right)) => Some(left * right),
-            _ => None,
+        .filter_map(|(target, list)| {
+            list.iter()
+                .find(|list_item| (*list_item) + (*target) == 2020)
+                .map(|right| target * right)
         })
         .collect::<Vec<_>>()
         .get(0)
