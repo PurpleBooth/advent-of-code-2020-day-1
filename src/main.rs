@@ -25,11 +25,8 @@ fn expenses(inputs: &[i64]) -> Option<i64> {
                 .iter()
                 .flat_map(move |&b| inputs.iter().map(move |&c| [a, b, c]))
         })
-        .collect::<Vec<_>>()
-        .iter()
         .filter(|[a, b, c]| a + b + c == 2020)
-        .collect::<Vec<_>>()
-        .get(0)
+        .next()
         .map(|[a, b, c]| a * b * c);
 }
 
